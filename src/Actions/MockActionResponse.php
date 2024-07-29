@@ -142,6 +142,20 @@ class MockActionResponse
         return $this;
     }
 
+    private function assertResponseDataContains(string $contents, string $key, string $message = ''): self
+    {
+        PHPUnit::assertThat(
+            $this->response['data'][$key] ?? '',
+            PHPUnit::logicalAnd(
+                PHPUnit::logicalNot(PHPUnit::isEmpty()),
+                PHPUnit::stringContains($contents, true)
+            ),
+            $message
+        );
+
+        return $this;
+    }
+
     /**
      * Asserts the handle response is a "message" and contains the given text.
      *
@@ -164,5 +178,18 @@ class MockActionResponse
     public function assertDangerContains(string $contents, string $message = ''): self
     {
         return $this->assertResponseContains($contents, 'danger', $message);
+    }
+
+    /**
+     * Asserts the handle response has "data" and contains the given text in some key.
+     *
+     * @param  string  $contents  The text to assert is in the response
+     * @param  string  $key       The key to assert is in the response
+     * @param  string  $message
+     * @return $this
+     */
+    public function assertDataContains(string $contents, string $key, string $message = ''): self
+    {
+        return $this->assertResponseDataContains($contents, $key, $message);
     }
 }
